@@ -1,0 +1,31 @@
+#####################################
+# swarm에서 작동하는 docker-compose
+#####################################
+version: '3.8'
+
+########################### SERVICES
+services:
+  app:
+    image: louislam/uptime-kuma
+    volumes:
+      - data:/app/data
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${HOSTNAME}
+      labels:
+        - traefik.enable=true
+        ## HTTP Routers
+        - traefik.http.routers.work-202111__status.entrypoints=websecure
+        - traefik.http.routers.work-202111__status.rule=Host(`status.beeclover.pro`)
+        - traefik.http.routers.work-202111__status.tls.certresolver=leresolver
+        - traefik.http.services.work-202111__status.loadbalancer.server.port=3001
+
+########################### NETWORKS
+networks:
+  default:
+    external:
+      name: proxy-main
+
+volume:
+  data:
