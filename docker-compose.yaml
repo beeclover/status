@@ -26,6 +26,5 @@ networks:
   default:
     external:
       name: proxy-main
-
-volume:
+volumes:
   data:
